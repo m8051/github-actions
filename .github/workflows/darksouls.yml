@@ -38,7 +38,8 @@ jobs:
             - 'apps/frontend/**'
             - 'infrastructure/backend/**'
             - 'api/serverless/**'
-      id: branch
+
+    - id: branch
       if: ${{ matrix.branch == github.event.pull_request.base.ref }}
       run: echo "branch=${{ matrix.branch }}" >> "GITHUB_OUTPUT"
     outputs:
