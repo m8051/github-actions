@@ -139,7 +139,7 @@ jobs:
   # All
   all-frontend-app:
     name: Frontend Application
-    needs: changes
+    needs: all-frontend-iac
     if: |
       github.event.pull_request.base.ref == needs.changes.outputs.branch &&
       needs.changes.outputs.frontend-iac == 'true' && 
@@ -156,7 +156,7 @@ jobs:
   # All
   all-backend-iac:
     name: Backend IaC
-    needs: changes
+    needs: all-frontend-app
     if: |
       github.event.pull_request.base.ref == needs.changes.outputs.branch &&
       needs.changes.outputs.frontend-iac == 'true' && 
