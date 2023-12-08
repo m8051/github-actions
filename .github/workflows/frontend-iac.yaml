@@ -52,7 +52,7 @@ jobs:
     needs: changes
     if: |
       github.event.pull_request.base.ref == needs.changes.outputs.branch &&
-      needs.changes.outputs.all == 'true'
+      needs.changes.outputs.frontend-iac == 'true' && needs.changes.outputs.others == 'false'
     uses: ./.github/workflows/terraform.yml
     secrets: inherit
     with:
