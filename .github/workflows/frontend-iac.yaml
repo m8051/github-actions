@@ -26,28 +26,28 @@ jobs:
     name: Monitor changes
     strategy:
       matrix:
-        branch: [souls/development, souls/staging, souls/production]
+        branches: [souls/development, souls/staging, souls/production]
     runs-on: ubuntu-latest
     steps:
     - uses: dorny/paths-filter@v2
       id: changes
       with:
         filters: |
-          all:
+          frontend-iac:
             - 'infrastructure/frontend/**'
+          others:
             - 'apps/frontend/**'
             - 'infrastructure/backend/**'
             - 'api/serverless/**'
-
-    - id: branch
-      if: ${{ matrix.branch == github.event.pull_request.base.ref }}
-      run: echo "branch=${{ matrix.branch }}" >> "$GITHUB_OUTPUT"
+    - id: target
+      if: ${{ matrix.branches == github.event.pull_request.base.ref }}
+      run: echo "branch=${{ matrix.branches }}" >> "$GITHUB_OUTPUT"
     outputs:
       all: ${{ steps.changes.outputs.all }}
-      branch: ${{ steps.branch.outputs.branch }}
+      branch: ${{ steps.target.outputs.branch }}
 
   # Frontend IaC
-  all-frontend-iac:
+  frontend-iac:
     name: 
     needs: changes
     if: |
@@ -59,4 +59,3 @@ jobs:
       directory: infrastructure/frontend/
       environment: ${{ needs.changes.outputs.branch }}
       branch: ${{ needs.changes.outputs.branch }}
-
