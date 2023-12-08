@@ -1,0 +1,63 @@
+---
+name: GitHub Actions CI/CD
+on:
+  pull_request:
+    types:
+      - opened
+      - synchronize
+      - closed
+    branches: 
+      - souls/development
+      - souls/staging
+      - souls/production
+    paths:
+      - 'infrastructure/frontend/**'
+      - 'infrastructure/backend/**'
+      - 'apps/frontend/**'
+      - 'api/serverless/**'
+
+# Using concurrency and the default behavior
+concurrency: ci-${{ github.ref }}
+
+jobs:
+
+  # Monitor Customer Portal File Changes
+  changes:
+    name: Monitor changes
+    strategy:
+      matrix:
+        branches: [souls/development, souls/staging, souls/production]
+    runs-on: ubuntu-latest
+    steps:
+    - uses: dorny/paths-filter@v2
+      id: changes
+      with:
+        filters: |
+          all:
+            - 'infrastructure/frontend/**'
+            - 'apps/frontend/**'
+            - 'infrastructure/backend/**'
+            - 'api/serverless/**'
+
+    - id: target
+      if: ${{ matrix.branches == github.event.pull_request.base.ref }}
+      run: echo "branch=${{ matrix.branches }}" >> "$GITHUB_OUTPUT"
+    outputs:
+      all: ${{ steps.changes.outputs.all }}
+      branch: ${{ steps.target.outputs.branch }}
+
+  # Frontend IaC
+  all-frontend-iac:
+    name: 
+    needs: changes
+    if: |
+      github.event.pull_request.base.ref == needs.changes.outputs.branch &&
+      needs.changes.outputs.all == 'true'
+    uses: ./.github/workflows/terraform.yml
+    secrets: inherit
+    with:
+      directory: infrastructure/frontend/
+      environment: ${{ needs.changes.outputs.branch }}
+      branch: ${{ needs.changes.outputs.branch }}
+
+
