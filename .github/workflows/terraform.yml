@@ -27,4 +27,4 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v4
-    - run: echo "Hello Plan"
+    - run: echo "environment=${{ inputs.environment }}, directory=${{ inputs.directory }}, branch=${{ inputs.branch }}"

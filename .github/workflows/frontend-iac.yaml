@@ -35,15 +35,20 @@ jobs:
         filters: |
           frontend-iac:
             - 'infrastructure/frontend/**'
-          others:
+          frontend-app:
             - 'apps/frontend/**'
+          backend-iac:
             - 'infrastructure/backend/**'
+          backend-api:
             - 'api/serverless/**'
     - id: target
       if: ${{ matrix.branches == github.event.pull_request.base.ref }}
       run: echo "branch=${{ matrix.branches }}" >> "$GITHUB_OUTPUT"
     outputs:
-      all: ${{ steps.changes.outputs.all }}
+      frontend-iac: ${{ steps.changes.outputs.frontend-iac }}
+      frontend-app: ${{ steps.changes.outputs.frontend-app }}
+      backend-iac: ${{ steps.changes.outputs.backend-iac }}
+      backend-api: ${{ steps.changes.outputs.backend-api }}
       branch: ${{ steps.target.outputs.branch }}
 
   # Frontend IaC
@@ -52,10 +57,65 @@ jobs:
     needs: changes
     if: |
       github.event.pull_request.base.ref == needs.changes.outputs.branch &&
-      needs.changes.outputs.frontend-iac == 'true' && needs.changes.outputs.others == 'false'
+      needs.changes.outputs.frontend-iac == 'true'  && 
+      needs.changes.outputs.frontend-app == 'false' &&
+      needs.changes.outputs.backend-iac  == 'false' &&
+      needs.changes.outputs.backend-api  == 'false' &&
     uses: ./.github/workflows/terraform.yml
     secrets: inherit
     with:
       directory: infrastructure/frontend/
       environment: ${{ needs.changes.outputs.branch }}
       branch: ${{ needs.changes.outputs.branch }}
+
+  # Frontend APP
+  frontend-app:
+    name: 
+    needs: changes
+    if: |
+      github.event.pull_request.base.ref == needs.changes.outputs.branch &&
+      needs.changes.outputs.frontend-iac == 'false'  && 
+      needs.changes.outputs.frontend-app == 'true' &&
+      needs.changes.outputs.backend-iac  == 'false' &&
+      needs.changes.outputs.backend-api  == 'false' &&
+    uses: ./.github/workflows/terraform.yml
+    secrets: inherit
+    with:
+      directory: infrastructure/frontend/
+      environment: ${{ needs.changes.outputs.branch }}
+      branch: ${{ needs.changes.outputs.branch }}
+
+  # Backend IaC
+  backend-iac:
+    name: 
+    needs: changes
+    if: |
+      github.event.pull_request.base.ref == needs.changes.outputs.branch &&
+      needs.changes.outputs.frontend-iac == 'false'  && 
+      needs.changes.outputs.frontend-app == 'false' &&
+      needs.changes.outputs.backend-iac  == 'true' &&
+      needs.changes.outputs.backend-api  == 'false' &&
+    uses: ./.github/workflows/terraform.yml
+    secrets: inherit
+    with:
+      directory: infrastructure/frontend/
+      environment: ${{ needs.changes.outputs.branch }}
+      branch: ${{ needs.changes.outputs.branch }}
+
+  # Backend API
+  backend-api:
+    name: 
+    needs: changes
+    if: |
+      github.event.pull_request.base.ref == needs.changes.outputs.branch &&
+      needs.changes.outputs.frontend-iac == 'false'  && 
+      needs.changes.outputs.frontend-app == 'false' &&
+      needs.changes.outputs.backend-iac  == 'false' &&
+      needs.changes.outputs.backend-api  == 'true' &&
+    uses: ./.github/workflows/terraform.yml
+    secrets: inherit
+    with:
+      directory: infrastructure/frontend/
+      environment: ${{ needs.changes.outputs.branch }}
+      branch: ${{ needs.changes.outputs.branch }}
+
