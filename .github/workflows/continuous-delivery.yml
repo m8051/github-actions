@@ -41,6 +41,12 @@ jobs:
             - 'infrastructure/backend/**'
           backend-api:
             - 'api/serverless/**'
+          all:
+            - 'infrastructure/frontend/**'
+            - 'app/frontend/**'
+            - 'infrastructure/backend/**'
+            - 'api/serverless/**'
+
     - id: target
       if: ${{ matrix.branches == github.event.pull_request.base.ref }}
       run: echo "branch=${{ matrix.branches }}" >> "$GITHUB_OUTPUT"
@@ -49,6 +55,7 @@ jobs:
       frontend-app: ${{ steps.changes.outputs.frontend-app }}
       backend-iac: ${{ steps.changes.outputs.backend-iac }}
       backend-api: ${{ steps.changes.outputs.backend-api }}
+      all: ${{ steps.changes.outputs.all }}
       branch: ${{ steps.target.outputs.branch }}
 
   # Frontend IaC
@@ -125,10 +132,7 @@ jobs:
     needs: changes
     if: |
       github.event.pull_request.base.ref == needs.changes.outputs.branch &&
-      needs.changes.outputs.frontend-iac == 'true' && 
-      needs.changes.outputs.frontend-app == 'true' &&
-      needs.changes.outputs.backend-iac  == 'true' &&
-      needs.changes.outputs.backend-api  == 'true'
+      needs.changes.outputs.all == 'true'
     uses: ./.github/workflows/terraform.yml
     secrets: inherit
     with:
@@ -141,11 +145,8 @@ jobs:
     name: Frontend Application
     needs: [changes, all-frontend-iac]
     if: |
-      github.event.pull_request.base.ref == needs.changes.outputs.branch &&
-      needs.changes.outputs.frontend-iac == 'true' && 
-      needs.changes.outputs.frontend-app == 'true' &&
-      needs.changes.outputs.backend-iac  == 'true' &&
-      needs.changes.outputs.backend-api  == 'true'
+      github.event.pull_request.base.ref == needs.changes.outputs.branch && 
+      needs.changes.outputs.all == 'true'
     uses: ./.github/workflows/frontend.yml
     secrets: inherit
     with:
@@ -159,10 +160,8 @@ jobs:
     needs: [changes, all-frontend-app]
     if: |
       github.event.pull_request.base.ref == needs.changes.outputs.branch &&
-      needs.changes.outputs.frontend-iac == 'true' && 
-      needs.changes.outputs.frontend-app == 'true' &&
-      needs.changes.outputs.backend-iac  == 'true' &&
-      needs.changes.outputs.backend-api  == 'true'
+      needs.changes.outputs.all == 'true'
+
     uses: ./.github/workflows/terraform.yml
     secrets: inherit
     with:
