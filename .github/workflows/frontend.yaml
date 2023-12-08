@@ -1,5 +1,5 @@
 ---
-name: Terraform
+name: Frontend
 # concurrency: deploy
 on:
   workflow_call:
@@ -23,9 +23,9 @@ jobs:
         working-directory: ${{ inputs.directory }}
     if: ${{ github.event.action == 'opened' || github.event.action == 'synchronize' }}
     environment: ${{ inputs.environment }}
-    name: Plan
+    name: Build
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v4
-    - run: echo "Terraform Workflow"
+    - run: echo "Frontend Workflow"
     - run: echo "environment=${{ inputs.environment }}, directory=${{ inputs.directory }}, branch=${{ inputs.branch }}"
