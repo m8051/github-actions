@@ -41,7 +41,7 @@ jobs:
 
     - id: branch
       if: ${{ matrix.branch == github.event.pull_request.base.ref }}
-      run: echo "branch=${{ matrix.branch }}" >> "GITHUB_OUTPUT"
+      run: echo "branch=${{ matrix.branch }}" >> "$GITHUB_OUTPUT"
     outputs:
       all: ${{ steps.changes.outputs.all }}
       branch: ${{ steps.branch.outputs.branch }}
