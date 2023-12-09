@@ -1,0 +1,31 @@
+---
+name: Frontend
+# concurrency: deploy
+on:
+  workflow_call:
+    inputs:
+      directory:
+        required: true
+        type: string
+      environment:
+        required: true
+        type: string
+      branch:
+        required: true
+        type: string
+  workflow_dispatch:
+
+jobs:
+  plan:
+    defaults:
+      run:
+        shell: bash
+        working-directory: ${{ inputs.directory }}
+    if: ${{ github.event.action == 'opened' || github.event.action == 'synchronize' }}
+    environment: ${{ inputs.environment }}
+    name: Build
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    - run: echo "Frontend Workflow"
+    - run: echo "environment=${{ inputs.environment }}, directory=${{ inputs.directory }}, branch=${{ inputs.branch }}"
