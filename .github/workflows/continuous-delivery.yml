@@ -50,7 +50,6 @@ jobs:
       frontend-app: ${{ steps.changes.outputs.frontend-app }}
       backend-iac: ${{ steps.changes.outputs.backend-iac }}
       backend-api: ${{ steps.changes.outputs.backend-api }}
-      all: ${{ steps.changes.outputs.all }}
       branch: ${{ steps.target.outputs.branch }}
 
   # Frontend IaC
