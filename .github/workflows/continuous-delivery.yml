@@ -67,6 +67,6 @@ jobs:
     uses: ./.github/workflows/terraform.yml
     secrets: inherit
     with:
-      directory: infrastructure/terraform/
+      directory: infrastructure/backend/
       environment: ${{ needs.changes.outputs.branch }}
       branch: ${{ needs.changes.outputs.branch }}
