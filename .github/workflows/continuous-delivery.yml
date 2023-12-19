@@ -49,7 +49,8 @@ jobs:
  terraform:
     name: Terraform
     needs: [changes]
-    if: ${{ github.event.pull_request.base.ref == needs.changes.outputs.branch &&
+    if: |
+      ${{ github.event.pull_request.base.ref == needs.changes.outputs.branch &&
       (( needs.changes.outputs.frontend-iac == 'true') || (needs.changes.outputs.backend-iac == 'true')) }}
     uses: ./.github/workflows/terraform.yml
     secrets: inherit
