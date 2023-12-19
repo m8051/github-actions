@@ -22,7 +22,7 @@ jobs:
         shell: bash
         working-directory: ${{ inputs.directory }}
     if: ${{ github.event.action == 'opened' || github.event.action == 'synchronize' }} &&
-        github.event.pull_request.bash.ref == ${{ inputs.branch }}
+        github.event.pull_request.base.ref == ${{ inputs.branch }}
     environment: ${{ inputs.environment }}
     name: Plan
     runs-on: ubuntu-latest
@@ -36,7 +36,7 @@ jobs:
       run:
         shell: bash
         working-directory: ${{ inputs.directory }}
-    if: ${{ (github.event.pull_request.merged == true) && (github.event.pull_request.bash.ref == inputs.branch) }}
+    if: ${{ (github.event.pull_request.merged == true) && (github.event.pull_request.base.ref == inputs.branch) }}
     environment: ${{ inputs.environment }}
     name: Apply
     needs: [plan]
