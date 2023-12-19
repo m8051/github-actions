@@ -58,4 +58,15 @@ jobs:
       directory: infrastructure/backend/
       environment: ${{ needs.changes.outputs.branch }}
       branch: ${{ needs.changes.outputs.branch }}
-  
+ 
+  terraform:
+    name: Terraform
+    needs: [changes]
+    if: ${{ (github.event.pull_request.merged == false) && (github.event.pull_request.base.ref == needs.changes.outputs.branch) &&
+      (needs.changes.outputs.frontend-iac == 'false') && (needs.changes.backend-iac == 'true') }}
+    uses: ./.github/workflows/terraform.yml
+    secrets: inherit
+    with:
+      directory: infrastructure/terraform/
+      environment: ${{ needs.changes.outputs.branch }}
+      branch: ${{ needs.changes.outputs.branch }}
