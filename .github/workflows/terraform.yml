@@ -27,5 +27,20 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v4
-    - run: echo "Terraform Workflow"
+    - run: echo "Terraform Plan"
+    - run: echo "environment=${{ inputs.environment }}, directory=${{ inputs.directory }}, branch=${{ inputs.branch }}"
+
+  apply:
+    defaults:
+      run:
+        shell: bash
+        working-directory: ${{ inputs.directory }}
+    if: ${{ github.event.pull_request.merged == true }}
+    environment: ${{ inputs.environment }}
+    name: Apply
+    needs: [plan]
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    - run: echo "Terraform Apply"
     - run: echo "environment=${{ inputs.environment }}, directory=${{ inputs.directory }}, branch=${{ inputs.branch }}"
