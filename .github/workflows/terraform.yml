@@ -36,7 +36,7 @@ jobs:
       run:
         shell: bash
         working-directory: ${{ inputs.directory }}
-    if: ${{ (github.event.pull_request.merged == true && (github,event.pull_request.bash.ref == inputs.branch) }}
+    if: ${{ (github.event.pull_request.merged == true) && (github.event.pull_request.bash.ref == inputs.branch) }}
     environment: ${{ inputs.environment }}
     name: Apply
     needs: [plan]
