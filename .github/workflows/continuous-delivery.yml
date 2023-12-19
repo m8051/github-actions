@@ -50,7 +50,7 @@ jobs:
   release:
     name: Deploy
     needs: [changes]
-    if: ${{ (github.event.pull_request.merged == true) && (github.event.pull_request.base.ref == needs.changes.outputs.branch) &&
+    if: ${{ (github.event.pull_request.base.ref == needs.changes.outputs.branch) &&
       (( needs.changes.outputs.frontend-iac == 'true') || (needs.changes.outputs.backend-iac == 'true')) }}
     uses: ./.github/workflows/terraform.yml
     secrets: inherit
@@ -58,16 +58,29 @@ jobs:
       directory: infrastructure/backend/
       environment: ${{ needs.changes.outputs.branch }}
       branch: ${{ needs.changes.outputs.branch }}
+
+  # # All
+  # release:
+  #   name: Deploy
+  #   needs: [changes]
+  #   if: ${{ (github.event.pull_request.merged == true) && (github.event.pull_request.base.ref == needs.changes.outputs.branch) &&
+  #     (( needs.changes.outputs.frontend-iac == 'true') || (needs.changes.outputs.backend-iac == 'true')) }}
+  #   uses: ./.github/workflows/terraform.yml
+  #   secrets: inherit
+  #   with:
+  #     directory: infrastructure/backend/
+  #     environment: ${{ needs.changes.outputs.branch }}
+  #     branch: ${{ needs.changes.outputs.branch }}
  
-  terraform:
-    name: Terraform
-    needs: [changes]
-    if: ${{ (github.event.pull_request.merged == false) && (github.event.pull_request.base.ref == needs.changes.outputs.branch) &&
-      (needs.changes.outputs.frontend-iac == 'false') && (needs.changes.outputs.backend-iac == 'true') }}
-    uses: ./.github/workflows/terraform.yml
-    secrets: inherit
-    with:
-      directory: infrastructure/backend/
-      environment: ${{ needs.changes.outputs.branch }}
-      branch: ${{ needs.changes.outputs.branch }}
-      
+  # terraform:
+  #   name: Terraform
+  #   needs: [changes]
+  #   if: ${{ (github.event.pull_request.merged == false) && (github.event.pull_request.base.ref == needs.changes.outputs.branch) &&
+  #     (needs.changes.outputs.frontend-iac == 'false') && (needs.changes.outputs.backend-iac == 'true') }}
+  #   uses: ./.github/workflows/terraform.yml
+  #   secrets: inherit
+  #   with:
+  #     directory: infrastructure/backend/
+  #     environment: ${{ needs.changes.outputs.branch }}
+  #     branch: ${{ needs.changes.outputs.branch }}
+
