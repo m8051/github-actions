@@ -15,7 +15,12 @@ on:
       - 'infrastructure/backend/**'
       - 'apps/frontend/**'
       - 'api/serverless/**'
-
+  push:
+    branches:
+      - '**'
+    paths:
+      - 'infrastructure/frontend/**'
+      
 # Using concurrency and the default behavior
 concurrency: ci-${{ github.ref }}
 
@@ -45,6 +50,15 @@ jobs:
       backend-iac: ${{ steps.changes.outputs.backend-iac }}
       branch: ${{ steps.target.outputs.branch }}
 
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node_version: [18]
+    steps:
+      - uses: actions/checkout@v4
+      - run: Use Node.js ${{ matrix.node_version }}
 
   # All
   release:
