@@ -61,12 +61,12 @@ jobs:
       - name: Use Node.js ${{ matrix.node_version }}
         uses: actions/setup-node@v4
         with:
-          node_version: ${{ matrix.node_version }}
+          node-version: ${{ matrix.node_version }}
 
   # All
   release:
     name: Deploy
-    needs: [changes]
+    needs: [changes, build]
     if: ${{ (github.event.pull_request.base.ref == needs.changes.outputs.branch) &&
       (( needs.changes.outputs.frontend-iac == 'true') || (needs.changes.outputs.backend-iac == 'true')) }}
     uses: ./.github/workflows/terraform.yml
