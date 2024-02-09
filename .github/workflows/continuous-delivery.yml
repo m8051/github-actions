@@ -15,11 +15,6 @@ on:
       - 'infrastructure/backend/**'
       - 'apps/frontend/**'
       - 'api/serverless/**'
-  push:
-    branches:
-      - '**'
-    paths:
-      - 'infrastructure/frontend/**'
       
 # Using concurrency and the default behavior
 concurrency: ci-${{ github.ref }}
