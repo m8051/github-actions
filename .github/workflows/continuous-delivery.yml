@@ -2,19 +2,10 @@
 name: GitHub Actions CI/CD
 on:
   pull_request:
-    types:
-      - opened
-      - synchronize
-      - closed
-    branches: 
+    branches:
       - souls/development
       - souls/staging
       - souls/production
-    paths:
-      - 'infrastructure/frontend/**'
-      - 'infrastructure/backend/**'
-      - 'apps/frontend/**'
-      - 'api/serverless/**'
       
 # Using concurrency and the default behavior
 concurrency: ci-${{ github.ref }}
