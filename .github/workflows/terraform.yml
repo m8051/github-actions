@@ -21,11 +21,27 @@ jobs:
       run:
         shell: bash
         working-directory: ${{ inputs.directory }}
-    if: ${{ github.event.action == 'opened' || github.event.action == 'synchronize' }}
+    if: ${{ github.event.action == 'opened' || github.event.action == 'synchronize' }} &&
+        github.event.pull_request.base.ref == ${{ inputs.branch }}
     environment: ${{ inputs.environment }}
     name: Plan
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v4
-    - run: echo "Terraform Workflow"
+    - run: echo "Terraform Plan"
+    - run: echo "environment=${{ inputs.environment }}, directory=${{ inputs.directory }}, branch=${{ inputs.branch }}"
+
+  apply:
+    defaults:
+      run:
+        shell: bash
+        working-directory: ${{ inputs.directory }}
+    if: ${{ (github.event.pull_request.merged == true) && (github.event.pull_request.base.ref == inputs.branch) }}
+    environment: ${{ inputs.environment }}
+    name: Apply
+    needs: [plan]
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    - run: echo "Terraform Apply"
     - run: echo "environment=${{ inputs.environment }}, directory=${{ inputs.directory }}, branch=${{ inputs.branch }}"
