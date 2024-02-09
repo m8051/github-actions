@@ -6,15 +6,6 @@ on:
       - opened
       - synchronize
       - closed
-    branches: 
-      - souls/development
-      - souls/staging
-      - souls/production
-    paths:
-      - 'infrastructure/frontend/**'
-      - 'infrastructure/backend/**'
-      - 'apps/frontend/**'
-      - 'api/serverless/**'
       
 # Using concurrency and the default behavior
 concurrency: ci-${{ github.ref }}
