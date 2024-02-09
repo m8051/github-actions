@@ -15,11 +15,6 @@ on:
       - 'infrastructure/backend/**'
       - 'apps/frontend/**'
       - 'api/serverless/**'
-  push:
-    branches:
-      - '**'
-    paths:
-      - 'infrastructure/frontend/**'
       
 # Using concurrency and the default behavior
 concurrency: ci-${{ github.ref }}
@@ -50,23 +45,11 @@ jobs:
       backend-iac: ${{ steps.changes.outputs.backend-iac }}
       branch: ${{ steps.target.outputs.branch }}
 
-  build:
-    name: Build
-    runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        node_version: [18]
-    steps:
-      - uses: actions/checkout@v4
-      - name: Use Node.js ${{ matrix.node_version }}
-        uses: actions/setup-node@v4
-        with:
-          node-version: ${{ matrix.node_version }}
 
   # All
   release:
     name: Deploy
-    needs: [changes, build]
+    needs: [changes]
     if: ${{ (github.event.pull_request.base.ref == needs.changes.outputs.branch) &&
       (( needs.changes.outputs.frontend-iac == 'true') || (needs.changes.outputs.backend-iac == 'true')) }}
     uses: ./.github/workflows/terraform.yml
