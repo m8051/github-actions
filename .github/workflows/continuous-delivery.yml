@@ -2,6 +2,10 @@
 name: GitHub Actions CI/CD
 on:
   pull_request:
+    branches:
+      - souls/development
+      - souls/staging
+      - souls/production
       
 # Using concurrency and the default behavior
 concurrency: ci-${{ github.ref }}
